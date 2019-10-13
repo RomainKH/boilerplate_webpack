@@ -10,19 +10,17 @@ module.exports = {
         open: true,
         hot: true
     },
-    entry: 
-    {
-        main: './src/index.js'
-    },
+    entry: './src/index.js',
     output:
     {
-        filename: 'bundle.[hash].js',
+        filename: 'js/bundle.[hash].js',
         path: path.resolve(__dirname, '../dist')
     },
     plugins:
     [
         new CopyWebpackPlugin([{from: 'static'}]),
         new HtmlWebpackPlugin({
+            filename: 'index.html',
             template: path.resolve(__dirname, '../src/index.html')
         }),
         new HtmlWebpackPlugin({
