@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackExcludeAssetsPlugin = require('html-webpack-exclude-assets-plugin')
 
 module.exports = {
     devtool: 'source-map',
@@ -10,10 +11,19 @@ module.exports = {
         open: true,
         hot: true
     },
-    entry: './src/index.js',
+    entry: {
+        homepage: [
+            './src/scripts/index.js',
+            './src/styles/app.styl'
+        ],
+        exemple: [
+            './src/scripts/exemple.js',
+            './src/styles/app.styl'
+        ]
+    },
     output:
     {
-        filename: 'js/bundle.[hash].js',
+        filename: '[hash].bundle.js',
         path: path.resolve(__dirname, '../dist')
     },
     plugins:
@@ -21,12 +31,17 @@ module.exports = {
         new CopyWebpackPlugin([{from: 'static'}]),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: path.resolve(__dirname, '../src/index.html')
+            minify: true,
+            template: path.resolve(__dirname, '../src/index.html'),
+            chunks: ['homepage']
         }),
         new HtmlWebpackPlugin({
-            filename: 'exemple.html',
-            template: path.resolve(__dirname, '../src/pages/exemple.html')
-        })
+            filename: './pages/exemple.html',
+            minify: true,
+            template: path.resolve(__dirname, '../src/pages/exemple.html'),
+            chunks: ['exemple']
+        }),
+        new HtmlWebpackExcludeAssetsPlugin()
     ],
     module:
     {
