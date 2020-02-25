@@ -1,1 +1,1 @@
-console.log(`hello exemple page`)
+console.log('hello exemple page')

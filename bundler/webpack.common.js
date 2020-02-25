@@ -23,7 +23,7 @@ module.exports = {
     },
     output:
     {
-        filename: '[hash].bundle.js',
+        filename: 'bundle.[name].js',
         path: path.resolve(__dirname, '../dist')
     },
     plugins:
@@ -41,7 +41,8 @@ module.exports = {
             template: path.resolve(__dirname, '../src/pages/exemple.html'),
             chunks: ['exemple']
         }),
-        new HtmlWebpackExcludeAssetsPlugin()
+        new HtmlWebpackExcludeAssetsPlugin(),
+
     ],
     module:
     {
