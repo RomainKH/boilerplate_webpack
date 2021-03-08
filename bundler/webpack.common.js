@@ -1,34 +1,30 @@
 const path = require('path')
+const json5 = require('json5')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackExcludeAssetsPlugin = require('html-webpack-exclude-assets-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-    devtool: 'source-map',
-    devServer: 
-    {
-        contentBase: './dist',
-        open: true,
-        hot: true
-    },
     entry: {
-        homepage: [
-            './src/scripts/index.js',
-            './src/styles/app.styl'
-        ],
-        exemple: [
-            './src/scripts/exemple.js',
-            './src/styles/app.styl'
-        ]
+        homepage: './src/scripts/index.js',
+        exemple: './src/scripts/exemple.js'
     },
     output:
     {
-        filename: 'bundle.[name].js',
-        path: path.resolve(__dirname, '../dist')
+        filename: '[contenthash].js',
+        path: path.resolve(__dirname, '../dist'),
+        clean: true,
     },
     plugins:
     [
-        new CopyWebpackPlugin([{from: 'static'}]),
+        new MiniCssExtractPlugin({
+            filename: '[contenthash].css'
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: 'static'}
+            ]
+        }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             minify: true,
@@ -36,14 +32,15 @@ module.exports = {
             chunks: ['homepage']
         }),
         new HtmlWebpackPlugin({
-            filename: './pages/exemple.html',
+            filename: 'exemple.html',
             minify: true,
             template: path.resolve(__dirname, '../src/pages/exemple.html'),
             chunks: ['exemple']
-        }),
-        new HtmlWebpackExcludeAssetsPlugin(),
-
+        })
     ],
+    optimization: {
+        runtimeChunk: 'single',
+    },
     module:
     {
         rules:
@@ -57,30 +54,21 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(jpg|png|svg|gif)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'images/'
-                        }
-                    }
-                ]
+                test: /\.styl$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'stylus-loader'
+                ],
+                
             },
             {
-                test: /\.(woff2|woff|otf|eot|ttf)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'fonts/'
-                        }
-                    }
-                ]
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                type: 'asset/resource',
             },
             {
                 test: /\.html$/,
@@ -88,7 +76,14 @@ module.exports = {
                 [
                     'html-loader'
                 ]
-            }
+            },
+            {
+                test: /\.json5$/i,
+                type: 'json',
+                parser: {
+                  parse: json5.parse,
+                },
+            },
         ]
     }
 }
