@@ -13,3 +13,5 @@ This bundler can have multiples html pages and load differents js files on those
  - Stylus
  - Webpack 5
  - HTML5
+ - Jest
+ - JSON5 & CSV support
