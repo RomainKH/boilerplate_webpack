@@ -64,11 +64,19 @@ module.exports = {
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
+                loader: 'file-loader',
+                options: {
+                    outputPath: 'images',
+                    name: '[contenthash].[ext]',
+                },
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: 'asset/resource',
+                loader: 'file-loader',
+                options: {
+                    outputPath: 'fonts',
+                    name: '[contenthash].[ext]',
+                },
             },
             {
                 test: /\.html$/,
@@ -76,6 +84,10 @@ module.exports = {
                 [
                     'html-loader'
                 ]
+            },
+            {
+                test: /\.(csv|tsv)$/i,
+                use: ['csv-loader'],
             },
             {
                 test: /\.json5$/i,
